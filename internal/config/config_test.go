@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const minimal = `{"etcd": {"endpoints": ["127.0.0.1:2379"], "prefix": "/i3d"}}`
+const minimal = `{"etcd": {"endpoints": ["127.0.0.1:2379"], "prefix": "/etcdflake"}}`
 
 func TestDefaults(t *testing.T) {
 	c, err := Parse([]byte(minimal))
@@ -19,12 +19,12 @@ func TestDefaults(t *testing.T) {
 	assert.Empty(t, c.DebugAddr)
 	assert.Equal(t, "info", c.LogLevel)
 	assert.Equal(t, 1024, c.MaxWorkers)
-	assert.Equal(t, "/i3d/", c.Etcd.Prefix)
+	assert.Equal(t, "/etcdflake/", c.Etcd.Prefix)
 }
 
 func TestPasswordFromEnv(t *testing.T) {
 	t.Setenv(PasswordEnv, "s3cret")
-	c, err := Parse([]byte(`{"etcd": {"endpoints": ["e:2379"], "prefix": "/i3d/", "username": "i3d", "password_file": "/nonexistent"}}`))
+	c, err := Parse([]byte(`{"etcd": {"endpoints": ["e:2379"], "prefix": "/etcdflake/", "username": "etcdflake", "password_file": "/nonexistent"}}`))
 	require.NoError(t, err)
 	assert.Equal(t, "s3cret", c.Etcd.Password, "env wins over file")
 }
@@ -32,24 +32,24 @@ func TestPasswordFromEnv(t *testing.T) {
 func TestPasswordFromFile(t *testing.T) {
 	f := filepath.Join(t.TempDir(), "pw")
 	require.NoError(t, os.WriteFile(f, []byte("fromfile\n"), 0o600))
-	c, err := Parse([]byte(`{"etcd": {"endpoints": ["e:2379"], "prefix": "/i3d/", "username": "i3d", "password_file": "` + f + `"}}`))
+	c, err := Parse([]byte(`{"etcd": {"endpoints": ["e:2379"], "prefix": "/etcdflake/", "username": "etcdflake", "password_file": "` + f + `"}}`))
 	require.NoError(t, err)
 	assert.Equal(t, "fromfile", c.Etcd.Password)
 }
 
 func TestRejects(t *testing.T) {
 	for name, js := range map[string]string{
-		"unknown field (e.g. inline password)": `{"etcd": {"endpoints": ["e:2379"], "prefix": "/i3d/", "password": "x"}}`,
-		"no endpoints":                         `{"etcd": {"prefix": "/i3d/"}}`,
+		"unknown field (e.g. inline password)": `{"etcd": {"endpoints": ["e:2379"], "prefix": "/etcdflake/", "password": "x"}}`,
+		"no endpoints":                         `{"etcd": {"prefix": "/etcdflake/"}}`,
 		"root prefix":                          `{"etcd": {"endpoints": ["e:2379"], "prefix": "/"}}`,
-		"username without password":            `{"etcd": {"endpoints": ["e:2379"], "prefix": "/i3d/", "username": "i3d"}}`,
-		"max_workers too large":                `{"max_workers": 1025, "etcd": {"endpoints": ["e:2379"], "prefix": "/i3d/"}}`,
-		"bad log level":                        `{"log_level": "loud", "etcd": {"endpoints": ["e:2379"], "prefix": "/i3d/"}}`,
-		"plaintext grpc on all interfaces":     `{"grpc_addr": ":7669", "etcd": {"endpoints": ["e:2379"], "prefix": "/i3d/"}}`,
-		"pprof on all interfaces":              `{"debug_addr": ":6060", "etcd": {"endpoints": ["e:2379"], "prefix": "/i3d/"}}`,
-		"grpc tls without key":                 `{"grpc_tls": {"cert_file": "c"}, "etcd": {"endpoints": ["e:2379"], "prefix": "/i3d/"}}`,
-		"etcd cert without key":                `{"etcd": {"endpoints": ["e:2379"], "prefix": "/i3d/", "tls": {"cert_file": "c"}}}`,
-		"bad grpc addr":                        `{"grpc_addr": "nope", "etcd": {"endpoints": ["e:2379"], "prefix": "/i3d/"}}`,
+		"username without password":            `{"etcd": {"endpoints": ["e:2379"], "prefix": "/etcdflake/", "username": "etcdflake"}}`,
+		"max_workers too large":                `{"max_workers": 1025, "etcd": {"endpoints": ["e:2379"], "prefix": "/etcdflake/"}}`,
+		"bad log level":                        `{"log_level": "loud", "etcd": {"endpoints": ["e:2379"], "prefix": "/etcdflake/"}}`,
+		"plaintext grpc on all interfaces":     `{"grpc_addr": ":7669", "etcd": {"endpoints": ["e:2379"], "prefix": "/etcdflake/"}}`,
+		"pprof on all interfaces":              `{"debug_addr": ":6060", "etcd": {"endpoints": ["e:2379"], "prefix": "/etcdflake/"}}`,
+		"grpc tls without key":                 `{"grpc_tls": {"cert_file": "c"}, "etcd": {"endpoints": ["e:2379"], "prefix": "/etcdflake/"}}`,
+		"etcd cert without key":                `{"etcd": {"endpoints": ["e:2379"], "prefix": "/etcdflake/", "tls": {"cert_file": "c"}}}`,
+		"bad grpc addr":                        `{"grpc_addr": "nope", "etcd": {"endpoints": ["e:2379"], "prefix": "/etcdflake/"}}`,
 	} {
 		t.Run(name, func(t *testing.T) {
 			t.Setenv(PasswordEnv, "")
@@ -62,9 +62,9 @@ func TestRejects(t *testing.T) {
 
 func TestAccepts(t *testing.T) {
 	for name, js := range map[string]string{
-		"plaintext grpc with explicit opt-in": `{"grpc_addr": ":7669", "allow_insecure_grpc": true, "etcd": {"endpoints": ["e:2379"], "prefix": "/i3d/"}}`,
-		"grpc tls on all interfaces":          `{"grpc_addr": ":7669", "grpc_tls": {"cert_file": "c", "key_file": "k"}, "etcd": {"endpoints": ["e:2379"], "prefix": "/i3d/"}}`,
-		"pprof on loopback":                   `{"debug_addr": "localhost:6060", "etcd": {"endpoints": ["e:2379"], "prefix": "/i3d/"}}`,
+		"plaintext grpc with explicit opt-in": `{"grpc_addr": ":7669", "allow_insecure_grpc": true, "etcd": {"endpoints": ["e:2379"], "prefix": "/etcdflake/"}}`,
+		"grpc tls on all interfaces":          `{"grpc_addr": ":7669", "grpc_tls": {"cert_file": "c", "key_file": "k"}, "etcd": {"endpoints": ["e:2379"], "prefix": "/etcdflake/"}}`,
+		"pprof on loopback":                   `{"debug_addr": "localhost:6060", "etcd": {"endpoints": ["e:2379"], "prefix": "/etcdflake/"}}`,
 	} {
 		t.Run(name, func(t *testing.T) {
 			_, err := Parse([]byte(js))

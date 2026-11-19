@@ -24,7 +24,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/pengubco/i3d/internal/snowflake"
+	"github.com/pengubco/etcdflake/internal/snowflake"
 	ec "go.etcd.io/etcd/client/v3"
 	"go.uber.org/zap"
 )

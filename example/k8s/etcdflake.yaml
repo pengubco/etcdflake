@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: i3d-config
-  namespace: i3d
+  name: etcdflake-config
+  namespace: etcdflake
 data:
   config.json: |
     {
@@ -11,27 +11,27 @@ data:
       "http_addr": "0.0.0.0:8001",
       "max_workers": 1024,
       "etcd": {
-        "endpoints": ["etcd.i3d.svc:2379"],
-        "prefix": "/i3d/",
-        "username": "i3d"
+        "endpoints": ["etcd.etcdflake.svc:2379"],
+        "prefix": "/etcdflake/",
+        "username": "etcdflake"
       }
     }
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: i3d
-  namespace: i3d
+  name: etcdflake
+  namespace: etcdflake
 spec:
   replicas: 5
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app.kubernetes.io/name: i3d
+      app.kubernetes.io/name: etcdflake
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: i3d
+        app.kubernetes.io/name: etcdflake
     spec:
       terminationGracePeriodSeconds: 30
       securityContext:
@@ -39,15 +39,15 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       containers:
-        - name: i3d
-          image: i3d:latest
+        - name: etcdflake
+          image: etcdflake:latest
           imagePullPolicy: IfNotPresent
-          args: ["-config=/etc/i3d/config.json"]
+          args: ["-config=/etc/etcdflake/config.json"]
           env:
-            - name: I3D_ETCD_PASSWORD
+            - name: ETCDFLAKE_ETCD_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: i3d-etcd
+                  name: etcdflake-etcd
                   key: password
           ports:
             - containerPort: 7669
@@ -77,12 +77,12 @@ spec:
               drop: ["ALL"]
           volumeMounts:
             - name: config
-              mountPath: /etc/i3d
+              mountPath: /etc/etcdflake
               readOnly: true
       volumes:
         - name: config
           configMap:
-            name: i3d-config
+            name: etcdflake-config
 ---
 # ClusterIP: the gRPC API is reachable only from inside the cluster, and the
 # metrics/health port isn't exposed through the Service at all. For clients
@@ -91,12 +91,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: i3d
-  namespace: i3d
+  name: etcdflake
+  namespace: etcdflake
 spec:
   type: ClusterIP
   selector:
-    app.kubernetes.io/name: i3d
+    app.kubernetes.io/name: etcdflake
   ports:
     - port: 7669
       targetPort: grpc

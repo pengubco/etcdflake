@@ -1,14 +1,14 @@
 VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 COMMIT  ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
 LDFLAGS := -s -w -X main.version=$(VERSION) -X main.commit=$(COMMIT)
-IMAGE   ?= i3d
+IMAGE   ?= etcdflake
 
 .PHONY: all build test lint vuln proto docker clean
 
 all: lint test build
 
 build:
-	CGO_ENABLED=0 go build -trimpath -ldflags "$(LDFLAGS)" -o build/i3d ./cmd/i3d
+	CGO_ENABLED=0 go build -trimpath -ldflags "$(LDFLAGS)" -o build/etcdflake ./cmd/etcdflake
 
 test:
 	go test -race -count=1 ./...
@@ -25,7 +25,7 @@ proto:
 	PATH="$(CURDIR)/bin:$$PATH" protoc \
 		--go_out=. --go_opt=paths=source_relative \
 		--go-grpc_out=. --go-grpc_opt=paths=source_relative \
-		api/i3d/v1/i3d.proto
+		api/etcdflake/v1/etcdflake.proto
 
 docker:
 	docker build --build-arg VERSION=$(VERSION) --build-arg COMMIT=$(COMMIT) -t $(IMAGE):$(VERSION) -t $(IMAGE):latest .

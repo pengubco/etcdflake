@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	i3dv1 "github.com/pengubco/i3d/api/i3d/v1"
-	"github.com/pengubco/i3d/internal/etcdtest"
-	"github.com/pengubco/i3d/internal/snowflake"
+	etcdflakev1 "github.com/pengubco/etcdflake/api/etcdflake/v1"
+	"github.com/pengubco/etcdflake/internal/etcdtest"
+	"github.com/pengubco/etcdflake/internal/snowflake"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	ec "go.etcd.io/etcd/client/v3"
@@ -34,7 +34,7 @@ func freeAddr(t *testing.T) string {
 func TestVersion(t *testing.T) {
 	var out bytes.Buffer
 	require.NoError(t, run(t.Context(), []string{"-version"}, &out))
-	assert.Contains(t, out.String(), "i3d dev")
+	assert.Contains(t, out.String(), "etcdflake dev")
 }
 
 func TestRequiresConfig(t *testing.T) {
@@ -61,14 +61,14 @@ func TestEndToEnd(t *testing.T) {
 
 	health := healthpb.NewHealthClient(conn)
 	require.Eventually(t, func() bool {
-		resp, err := health.Check(ctx, &healthpb.HealthCheckRequest{Service: "i3d.v1.IDService"})
+		resp, err := health.Check(ctx, &healthpb.HealthCheckRequest{Service: "etcdflake.v1.IDService"})
 		return err == nil && resp.GetStatus() == healthpb.HealthCheckResponse_SERVING
 	}, 20*time.Second, 50*time.Millisecond)
 
-	client := i3dv1.NewIDServiceClient(conn)
-	one, err := client.NextID(ctx, &i3dv1.NextIDRequest{})
+	client := etcdflakev1.NewIDServiceClient(conn)
+	one, err := client.NextID(ctx, &etcdflakev1.NextIDRequest{})
 	require.NoError(t, err)
-	batch, err := client.NextIDs(ctx, &i3dv1.NextIDsRequest{Count: 10})
+	batch, err := client.NextIDs(ctx, &etcdflakev1.NextIDsRequest{Count: 10})
 	require.NoError(t, err)
 	require.Len(t, batch.GetIds(), 10)
 	assert.Greater(t, batch.GetIds()[0], one.GetId())

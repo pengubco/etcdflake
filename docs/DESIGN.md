@@ -1,6 +1,6 @@
 # Design
 
-i3d runs the [snowflake](https://en.wikipedia.org/wiki/Snowflake_ID) algorithm on many
+etcdflake runs the [snowflake](https://en.wikipedia.org/wiki/Snowflake_ID) algorithm on many
 stateless nodes and coordinates them through [etcd](https://etcd.io/). This document
 explains the ID layout, how nodes share worker IDs, and why IDs stay unique when clocks,
 networks or processes misbehave.
@@ -33,7 +33,7 @@ networks or processes misbehave.
 
 ## etcd keys
 
-All keys live under the configured prefix (e.g. `/i3d/`). One prefix is one cluster.
+All keys live under the configured prefix (e.g. `/etcdflake/`). One prefix is one cluster.
 
 | Key                              | Value       | Lifetime                       |
 |----------------------------------|-------------|--------------------------------|

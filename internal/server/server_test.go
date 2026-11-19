@@ -6,9 +6,9 @@ import (
 	"net"
 	"testing"
 
-	i3dv1 "github.com/pengubco/i3d/api/i3d/v1"
-	"github.com/pengubco/i3d/internal/snowflake"
-	"github.com/pengubco/i3d/internal/worker"
+	etcdflakev1 "github.com/pengubco/etcdflake/api/etcdflake/v1"
+	"github.com/pengubco/etcdflake/internal/snowflake"
+	"github.com/pengubco/etcdflake/internal/worker"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/testutil"
 	"github.com/stretchr/testify/assert"
@@ -45,14 +45,14 @@ func (f *fakeSource) NextIDs(n int) ([]int64, error) {
 	return ids, nil
 }
 
-func dial(t *testing.T, src IDSource) (i3dv1.IDServiceClient, *Server) {
+func dial(t *testing.T, src IDSource) (etcdflakev1.IDServiceClient, *Server) {
 	t.Helper()
 	srv, err := New(src, prometheus.NewRegistry())
 	require.NoError(t, err)
 
 	lis := bufconn.Listen(1 << 20)
 	g := grpc.NewServer()
-	i3dv1.RegisterIDServiceServer(g, srv)
+	etcdflakev1.RegisterIDServiceServer(g, srv)
 	go func() { _ = g.Serve(lis) }()
 	t.Cleanup(g.Stop)
 
@@ -61,12 +61,12 @@ func dial(t *testing.T, src IDSource) (i3dv1.IDServiceClient, *Server) {
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = conn.Close() })
-	return i3dv1.NewIDServiceClient(conn), srv
+	return etcdflakev1.NewIDServiceClient(conn), srv
 }
 
 func TestNextID(t *testing.T) {
 	c, srv := dial(t, &fakeSource{})
-	resp, err := c.NextID(t.Context(), &i3dv1.NextIDRequest{})
+	resp, err := c.NextID(t.Context(), &etcdflakev1.NextIDRequest{})
 	require.NoError(t, err)
 	assert.Equal(t, int64(1), resp.GetId())
 	assert.InDelta(t, 1, testutil.ToFloat64(srv.issued), 0)
@@ -74,16 +74,16 @@ func TestNextID(t *testing.T) {
 
 func TestNextIDs(t *testing.T) {
 	c, srv := dial(t, &fakeSource{})
-	resp, err := c.NextIDs(t.Context(), &i3dv1.NextIDsRequest{Count: 3})
+	resp, err := c.NextIDs(t.Context(), &etcdflakev1.NextIDsRequest{Count: 3})
 	require.NoError(t, err)
 	assert.Equal(t, []int64{1, 2, 3}, resp.GetIds())
 	assert.InDelta(t, 3, testutil.ToFloat64(srv.issued), 0)
 
-	_, err = c.NextIDs(t.Context(), &i3dv1.NextIDsRequest{Count: MaxBatch})
+	_, err = c.NextIDs(t.Context(), &etcdflakev1.NextIDsRequest{Count: MaxBatch})
 	require.NoError(t, err)
 
 	for _, n := range []uint32{0, MaxBatch + 1} {
-		_, err := c.NextIDs(t.Context(), &i3dv1.NextIDsRequest{Count: n})
+		_, err := c.NextIDs(t.Context(), &etcdflakev1.NextIDsRequest{Count: n})
 		assert.Equal(t, codes.InvalidArgument, status.Code(err), "count %d", n)
 	}
 }
@@ -102,9 +102,9 @@ func TestErrorMapping(t *testing.T) {
 		{errors.New("boom"), codes.Internal, "internal"},
 	} {
 		c, srv := dial(t, &fakeSource{err: tc.err})
-		_, err := c.NextID(t.Context(), &i3dv1.NextIDRequest{})
+		_, err := c.NextID(t.Context(), &etcdflakev1.NextIDRequest{})
 		assert.Equal(t, tc.code, status.Code(err), "%v", tc.err)
-		_, err = c.NextIDs(t.Context(), &i3dv1.NextIDsRequest{Count: 2})
+		_, err = c.NextIDs(t.Context(), &etcdflakev1.NextIDsRequest{Count: 2})
 		assert.Equal(t, tc.code, status.Code(err), "%v", tc.err)
 		assert.InDelta(t, 2, testutil.ToFloat64(srv.errs.WithLabelValues(tc.reason)), 0, "%v", tc.err)
 	}

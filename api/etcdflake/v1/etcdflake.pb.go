@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.12
 // 	protoc        v3.19.6
-// source: api/i3d/v1/i3d.proto
+// source: api/etcdflake/v1/etcdflake.proto
 
-package i3dv1
+package etcdflakev1
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -29,7 +29,7 @@ type NextIDRequest struct {
 
 func (x *NextIDRequest) Reset() {
 	*x = NextIDRequest{}
-	mi := &file_api_i3d_v1_i3d_proto_msgTypes[0]
+	mi := &file_api_etcdflake_v1_etcdflake_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -41,7 +41,7 @@ func (x *NextIDRequest) String() string {
 func (*NextIDRequest) ProtoMessage() {}
 
 func (x *NextIDRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_i3d_v1_i3d_proto_msgTypes[0]
+	mi := &file_api_etcdflake_v1_etcdflake_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -54,7 +54,7 @@ func (x *NextIDRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NextIDRequest.ProtoReflect.Descriptor instead.
 func (*NextIDRequest) Descriptor() ([]byte, []int) {
-	return file_api_i3d_v1_i3d_proto_rawDescGZIP(), []int{0}
+	return file_api_etcdflake_v1_etcdflake_proto_rawDescGZIP(), []int{0}
 }
 
 type NextIDResponse struct {
@@ -66,7 +66,7 @@ type NextIDResponse struct {
 
 func (x *NextIDResponse) Reset() {
 	*x = NextIDResponse{}
-	mi := &file_api_i3d_v1_i3d_proto_msgTypes[1]
+	mi := &file_api_etcdflake_v1_etcdflake_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -78,7 +78,7 @@ func (x *NextIDResponse) String() string {
 func (*NextIDResponse) ProtoMessage() {}
 
 func (x *NextIDResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_i3d_v1_i3d_proto_msgTypes[1]
+	mi := &file_api_etcdflake_v1_etcdflake_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -91,7 +91,7 @@ func (x *NextIDResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NextIDResponse.ProtoReflect.Descriptor instead.
 func (*NextIDResponse) Descriptor() ([]byte, []int) {
-	return file_api_i3d_v1_i3d_proto_rawDescGZIP(), []int{1}
+	return file_api_etcdflake_v1_etcdflake_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *NextIDResponse) GetId() int64 {
@@ -111,7 +111,7 @@ type NextIDsRequest struct {
 
 func (x *NextIDsRequest) Reset() {
 	*x = NextIDsRequest{}
-	mi := &file_api_i3d_v1_i3d_proto_msgTypes[2]
+	mi := &file_api_etcdflake_v1_etcdflake_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -123,7 +123,7 @@ func (x *NextIDsRequest) String() string {
 func (*NextIDsRequest) ProtoMessage() {}
 
 func (x *NextIDsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_i3d_v1_i3d_proto_msgTypes[2]
+	mi := &file_api_etcdflake_v1_etcdflake_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -136,7 +136,7 @@ func (x *NextIDsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NextIDsRequest.ProtoReflect.Descriptor instead.
 func (*NextIDsRequest) Descriptor() ([]byte, []int) {
-	return file_api_i3d_v1_i3d_proto_rawDescGZIP(), []int{2}
+	return file_api_etcdflake_v1_etcdflake_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *NextIDsRequest) GetCount() uint32 {
@@ -155,7 +155,7 @@ type NextIDsResponse struct {
 
 func (x *NextIDsResponse) Reset() {
 	*x = NextIDsResponse{}
-	mi := &file_api_i3d_v1_i3d_proto_msgTypes[3]
+	mi := &file_api_etcdflake_v1_etcdflake_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -167,7 +167,7 @@ func (x *NextIDsResponse) String() string {
 func (*NextIDsResponse) ProtoMessage() {}
 
 func (x *NextIDsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_i3d_v1_i3d_proto_msgTypes[3]
+	mi := &file_api_etcdflake_v1_etcdflake_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -180,7 +180,7 @@ func (x *NextIDsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NextIDsResponse.ProtoReflect.Descriptor instead.
 func (*NextIDsResponse) Descriptor() ([]byte, []int) {
-	return file_api_i3d_v1_i3d_proto_rawDescGZIP(), []int{3}
+	return file_api_etcdflake_v1_etcdflake_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *NextIDsResponse) GetIds() []int64 {
@@ -190,46 +190,46 @@ func (x *NextIDsResponse) GetIds() []int64 {
 	return nil
 }
 
-var File_api_i3d_v1_i3d_proto protoreflect.FileDescriptor
+var File_api_etcdflake_v1_etcdflake_proto protoreflect.FileDescriptor
 
-const file_api_i3d_v1_i3d_proto_rawDesc = "" +
+const file_api_etcdflake_v1_etcdflake_proto_rawDesc = "" +
 	"\n" +
-	"\x14api/i3d/v1/i3d.proto\x12\x06i3d.v1\"\x0f\n" +
+	" api/etcdflake/v1/etcdflake.proto\x12\fetcdflake.v1\"\x0f\n" +
 	"\rNextIDRequest\" \n" +
 	"\x0eNextIDResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\"&\n" +
 	"\x0eNextIDsRequest\x12\x14\n" +
 	"\x05count\x18\x01 \x01(\rR\x05count\"#\n" +
 	"\x0fNextIDsResponse\x12\x10\n" +
-	"\x03ids\x18\x01 \x03(\x03R\x03ids2\x80\x01\n" +
-	"\tIDService\x127\n" +
-	"\x06NextID\x12\x15.i3d.v1.NextIDRequest\x1a\x16.i3d.v1.NextIDResponse\x12:\n" +
-	"\aNextIDs\x12\x16.i3d.v1.NextIDsRequest\x1a\x17.i3d.v1.NextIDsResponseB*Z(github.com/pengubco/i3d/api/i3d/v1;i3dv1b\x06proto3"
+	"\x03ids\x18\x01 \x03(\x03R\x03ids2\x98\x01\n" +
+	"\tIDService\x12C\n" +
+	"\x06NextID\x12\x1b.etcdflake.v1.NextIDRequest\x1a\x1c.etcdflake.v1.NextIDResponse\x12F\n" +
+	"\aNextIDs\x12\x1c.etcdflake.v1.NextIDsRequest\x1a\x1d.etcdflake.v1.NextIDsResponseB<Z:github.com/pengubco/etcdflake/api/etcdflake/v1;etcdflakev1b\x06proto3"
 
 var (
-	file_api_i3d_v1_i3d_proto_rawDescOnce sync.Once
-	file_api_i3d_v1_i3d_proto_rawDescData []byte
+	file_api_etcdflake_v1_etcdflake_proto_rawDescOnce sync.Once
+	file_api_etcdflake_v1_etcdflake_proto_rawDescData []byte
 )
 
-func file_api_i3d_v1_i3d_proto_rawDescGZIP() []byte {
-	file_api_i3d_v1_i3d_proto_rawDescOnce.Do(func() {
-		file_api_i3d_v1_i3d_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_api_i3d_v1_i3d_proto_rawDesc), len(file_api_i3d_v1_i3d_proto_rawDesc)))
+func file_api_etcdflake_v1_etcdflake_proto_rawDescGZIP() []byte {
+	file_api_etcdflake_v1_etcdflake_proto_rawDescOnce.Do(func() {
+		file_api_etcdflake_v1_etcdflake_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_api_etcdflake_v1_etcdflake_proto_rawDesc), len(file_api_etcdflake_v1_etcdflake_proto_rawDesc)))
 	})
-	return file_api_i3d_v1_i3d_proto_rawDescData
+	return file_api_etcdflake_v1_etcdflake_proto_rawDescData
 }
 
-var file_api_i3d_v1_i3d_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
-var file_api_i3d_v1_i3d_proto_goTypes = []any{
-	(*NextIDRequest)(nil),   // 0: i3d.v1.NextIDRequest
-	(*NextIDResponse)(nil),  // 1: i3d.v1.NextIDResponse
-	(*NextIDsRequest)(nil),  // 2: i3d.v1.NextIDsRequest
-	(*NextIDsResponse)(nil), // 3: i3d.v1.NextIDsResponse
+var file_api_etcdflake_v1_etcdflake_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_api_etcdflake_v1_etcdflake_proto_goTypes = []any{
+	(*NextIDRequest)(nil),   // 0: etcdflake.v1.NextIDRequest
+	(*NextIDResponse)(nil),  // 1: etcdflake.v1.NextIDResponse
+	(*NextIDsRequest)(nil),  // 2: etcdflake.v1.NextIDsRequest
+	(*NextIDsResponse)(nil), // 3: etcdflake.v1.NextIDsResponse
 }
-var file_api_i3d_v1_i3d_proto_depIdxs = []int32{
-	0, // 0: i3d.v1.IDService.NextID:input_type -> i3d.v1.NextIDRequest
-	2, // 1: i3d.v1.IDService.NextIDs:input_type -> i3d.v1.NextIDsRequest
-	1, // 2: i3d.v1.IDService.NextID:output_type -> i3d.v1.NextIDResponse
-	3, // 3: i3d.v1.IDService.NextIDs:output_type -> i3d.v1.NextIDsResponse
+var file_api_etcdflake_v1_etcdflake_proto_depIdxs = []int32{
+	0, // 0: etcdflake.v1.IDService.NextID:input_type -> etcdflake.v1.NextIDRequest
+	2, // 1: etcdflake.v1.IDService.NextIDs:input_type -> etcdflake.v1.NextIDsRequest
+	1, // 2: etcdflake.v1.IDService.NextID:output_type -> etcdflake.v1.NextIDResponse
+	3, // 3: etcdflake.v1.IDService.NextIDs:output_type -> etcdflake.v1.NextIDsResponse
 	2, // [2:4] is the sub-list for method output_type
 	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -237,26 +237,26 @@ var file_api_i3d_v1_i3d_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_api_i3d_v1_i3d_proto_init() }
-func file_api_i3d_v1_i3d_proto_init() {
-	if File_api_i3d_v1_i3d_proto != nil {
+func init() { file_api_etcdflake_v1_etcdflake_proto_init() }
+func file_api_etcdflake_v1_etcdflake_proto_init() {
+	if File_api_etcdflake_v1_etcdflake_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_i3d_v1_i3d_proto_rawDesc), len(file_api_i3d_v1_i3d_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_etcdflake_v1_etcdflake_proto_rawDesc), len(file_api_etcdflake_v1_etcdflake_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_api_i3d_v1_i3d_proto_goTypes,
-		DependencyIndexes: file_api_i3d_v1_i3d_proto_depIdxs,
-		MessageInfos:      file_api_i3d_v1_i3d_proto_msgTypes,
+		GoTypes:           file_api_etcdflake_v1_etcdflake_proto_goTypes,
+		DependencyIndexes: file_api_etcdflake_v1_etcdflake_proto_depIdxs,
+		MessageInfos:      file_api_etcdflake_v1_etcdflake_proto_msgTypes,
 	}.Build()
-	File_api_i3d_v1_i3d_proto = out.File
-	file_api_i3d_v1_i3d_proto_goTypes = nil
-	file_api_i3d_v1_i3d_proto_depIdxs = nil
+	File_api_etcdflake_v1_etcdflake_proto = out.File
+	file_api_etcdflake_v1_etcdflake_proto_goTypes = nil
+	file_api_etcdflake_v1_etcdflake_proto_depIdxs = nil
 }

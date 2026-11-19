@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.2
 // - protoc             v3.19.6
-// source: api/i3d/v1/i3d.proto
+// source: api/etcdflake/v1/etcdflake.proto
 
-package i3dv1
+package etcdflakev1
 
 import (
 	context "context"
@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	IDService_NextID_FullMethodName  = "/i3d.v1.IDService/NextID"
-	IDService_NextIDs_FullMethodName = "/i3d.v1.IDService/NextIDs"
+	IDService_NextID_FullMethodName  = "/etcdflake.v1.IDService/NextID"
+	IDService_NextIDs_FullMethodName = "/etcdflake.v1.IDService/NextIDs"
 )
 
 // IDServiceClient is the client API for IDService service.
@@ -162,7 +162,7 @@ func _IDService_NextIDs_Handler(srv interface{}, ctx context.Context, dec func(i
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var IDService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "i3d.v1.IDService",
+	ServiceName: "etcdflake.v1.IDService",
 	HandlerType: (*IDServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -175,5 +175,5 @@ var IDService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "api/i3d/v1/i3d.proto",
+	Metadata: "api/etcdflake/v1/etcdflake.proto",
 }

@@ -1,11 +1,11 @@
 # Single-node etcd for the demo only. Its data lives in an emptyDir, so it is lost
-# when the pod is deleted. Run a durable etcd cluster in production: i3d's
+# when the pod is deleted. Run a durable etcd cluster in production: etcdflake's
 # uniqueness across restarts depends on the reservations stored in etcd.
 apiVersion: v1
 kind: Pod
 metadata:
   name: etcd
-  namespace: i3d
+  namespace: etcdflake
   labels:
     app.kubernetes.io/name: etcd
 spec:
@@ -17,7 +17,7 @@ spec:
         - --name=etcd
         - --data-dir=/var/lib/etcd
         - --listen-client-urls=http://0.0.0.0:2379
-        - --advertise-client-urls=http://etcd.i3d.svc:2379
+        - --advertise-client-urls=http://etcd.etcdflake.svc:2379
       ports:
         - containerPort: 2379
           name: client
@@ -33,7 +33,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: etcd
-  namespace: i3d
+  namespace: etcdflake
 spec:
   type: ClusterIP
   selector:

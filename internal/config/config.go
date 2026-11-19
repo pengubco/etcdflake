@@ -1,4 +1,4 @@
-// Package config loads and validates the i3d server configuration.
+// Package config loads and validates the etcdflake server configuration.
 package config
 
 import (
@@ -13,7 +13,7 @@ import (
 
 // PasswordEnv is the environment variable holding the etcd password. It takes
 // precedence over Etcd.PasswordFile.
-const PasswordEnv = "I3D_ETCD_PASSWORD" //nolint:gosec // variable name, not a credential
+const PasswordEnv = "ETCDFLAKE_ETCD_PASSWORD" //nolint:gosec // variable name, not a credential
 
 // Config is the server configuration, loaded from a JSON file.
 type Config struct {
@@ -47,12 +47,12 @@ type Config struct {
 type Etcd struct {
 	Endpoints []string `json:"endpoints"`
 
-	// Prefix namespaces all keys, e.g. "/i3d/". One prefix is one cluster.
+	// Prefix namespaces all keys, e.g. "/etcdflake/". One prefix is one cluster.
 	Prefix string `json:"prefix"`
 
 	Username string `json:"username"`
 
-	// PasswordFile is a file containing the password. Ignored when $I3D_ETCD_PASSWORD is set.
+	// PasswordFile is a file containing the password. Ignored when $ETCDFLAKE_ETCD_PASSWORD is set.
 	PasswordFile string `json:"password_file"`
 
 	// TLS for the etcd connection. Set CertFile and KeyFile for client certificate auth.

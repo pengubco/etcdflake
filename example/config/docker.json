@@ -5,7 +5,7 @@
   "max_workers": 1024,
   "etcd": {
     "endpoints": ["host.docker.internal:2379"],
-    "prefix": "/i3d/",
-    "username": "i3d"
+    "prefix": "/etcdflake/",
+    "username": "etcdflake"
   }
 }

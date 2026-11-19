@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package i3d.v1;
+package etcdflake.v1;
 
-option go_package = "github.com/pengubco/i3d/api/i3d/v1;i3dv1";
+option go_package = "github.com/pengubco/etcdflake/api/etcdflake/v1;etcdflakev1";
 
 // IDService issues unique 64-bit IDs. IDs from one node strictly increase.
 // IDs across nodes are roughly ordered by time.

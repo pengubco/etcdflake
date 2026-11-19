@@ -1,4 +1,4 @@
-module github.com/pengubco/i3d
+module github.com/pengubco/etcdflake
 
 go 1.27.0
 

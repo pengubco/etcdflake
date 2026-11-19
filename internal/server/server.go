@@ -1,13 +1,13 @@
-// Package server implements the i3d.v1.IDService gRPC API.
+// Package server implements the etcdflake.v1.IDService gRPC API.
 package server
 
 import (
 	"context"
 	"errors"
 
-	i3dv1 "github.com/pengubco/i3d/api/i3d/v1"
-	"github.com/pengubco/i3d/internal/snowflake"
-	"github.com/pengubco/i3d/internal/worker"
+	etcdflakev1 "github.com/pengubco/etcdflake/api/etcdflake/v1"
+	"github.com/pengubco/etcdflake/internal/snowflake"
+	"github.com/pengubco/etcdflake/internal/worker"
 	"github.com/prometheus/client_golang/prometheus"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -24,7 +24,7 @@ type IDSource interface {
 
 // Server serves IDs from an IDSource.
 type Server struct {
-	i3dv1.UnimplementedIDServiceServer
+	etcdflakev1.UnimplementedIDServiceServer
 
 	src    IDSource
 	issued prometheus.Counter
@@ -36,11 +36,11 @@ func New(src IDSource, reg prometheus.Registerer) (*Server, error) {
 	s := &Server{
 		src: src,
 		issued: prometheus.NewCounter(prometheus.CounterOpts{
-			Name: "i3d_ids_issued_total",
+			Name: "etcdflake_ids_issued_total",
 			Help: "Number of IDs issued.",
 		}),
 		errs: prometheus.NewCounterVec(prometheus.CounterOpts{
-			Name: "i3d_id_errors_total",
+			Name: "etcdflake_id_errors_total",
 			Help: "Number of failed ID requests by reason.",
 		}, []string{"reason"}),
 	}
@@ -55,17 +55,17 @@ func New(src IDSource, reg prometheus.Registerer) (*Server, error) {
 }
 
 // NextID returns one ID.
-func (s *Server) NextID(context.Context, *i3dv1.NextIDRequest) (*i3dv1.NextIDResponse, error) {
+func (s *Server) NextID(context.Context, *etcdflakev1.NextIDRequest) (*etcdflakev1.NextIDResponse, error) {
 	id, err := s.src.NextID()
 	if err != nil {
 		return nil, s.toStatus(err)
 	}
 	s.issued.Inc()
-	return &i3dv1.NextIDResponse{Id: id}, nil
+	return &etcdflakev1.NextIDResponse{Id: id}, nil
 }
 
 // NextIDs returns req.Count increasing IDs.
-func (s *Server) NextIDs(_ context.Context, req *i3dv1.NextIDsRequest) (*i3dv1.NextIDsResponse, error) {
+func (s *Server) NextIDs(_ context.Context, req *etcdflakev1.NextIDsRequest) (*etcdflakev1.NextIDsResponse, error) {
 	n := req.GetCount()
 	if n < 1 || n > MaxBatch {
 		s.errs.WithLabelValues("invalid_argument").Inc()
@@ -76,7 +76,7 @@ func (s *Server) NextIDs(_ context.Context, req *i3dv1.NextIDsRequest) (*i3dv1.N
 		return nil, s.toStatus(err)
 	}
 	s.issued.Add(float64(len(ids)))
-	return &i3dv1.NextIDsResponse{Ids: ids}, nil
+	return &etcdflakev1.NextIDsResponse{Ids: ids}, nil
 }
 
 func (s *Server) toStatus(err error) error {

@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/pengubco/i3d/internal/etcdtest"
-	"github.com/pengubco/i3d/internal/snowflake"
+	"github.com/pengubco/etcdflake/internal/etcdtest"
+	"github.com/pengubco/etcdflake/internal/snowflake"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	ec "go.etcd.io/etcd/client/v3"
@@ -16,7 +16,7 @@ import (
 	"go.uber.org/zap/zaptest"
 )
 
-const prefix = "/i3d-test/"
+const prefix = "/etcdflake-test/"
 
 func nsClient(t *testing.T, srv *etcdtest.Server) *ec.Client {
 	t.Helper()

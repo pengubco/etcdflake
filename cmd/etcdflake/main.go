@@ -1,4 +1,4 @@
-// Command i3d serves unique, increasing 64-bit IDs over gRPC, coordinated through etcd.
+// Command etcdflake serves unique, increasing 64-bit IDs over gRPC, coordinated through etcd.
 package main
 
 import (
@@ -17,10 +17,10 @@ import (
 	"syscall"
 	"time"
 
-	i3dv1 "github.com/pengubco/i3d/api/i3d/v1"
-	"github.com/pengubco/i3d/internal/config"
-	"github.com/pengubco/i3d/internal/server"
-	"github.com/pengubco/i3d/internal/worker"
+	etcdflakev1 "github.com/pengubco/etcdflake/api/etcdflake/v1"
+	"github.com/pengubco/etcdflake/internal/config"
+	"github.com/pengubco/etcdflake/internal/server"
+	"github.com/pengubco/etcdflake/internal/worker"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -47,7 +47,7 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 	if err := run(ctx, os.Args[1:], os.Stdout); err != nil {
-		fmt.Fprintln(os.Stderr, "i3d:", err)
+		fmt.Fprintln(os.Stderr, "etcdflake:", err)
 		os.Exit(1)
 	}
 }
@@ -55,14 +55,14 @@ func main() {
 // run starts the server and blocks until ctx is done or the worker stops.
 // It returns nil on a requested shutdown.
 func run(ctx context.Context, args []string, stdout io.Writer) error {
-	fs := flag.NewFlagSet("i3d", flag.ContinueOnError)
+	fs := flag.NewFlagSet("etcdflake", flag.ContinueOnError)
 	cfgPath := fs.String("config", "", "path to the JSON config file")
 	showVersion := fs.Bool("version", false, "print version and exit")
 	if err := fs.Parse(args); err != nil {
 		return err
 	}
 	if *showVersion {
-		_, err := fmt.Fprintf(stdout, "i3d %s (%s)\n", version, commit)
+		_, err := fmt.Fprintf(stdout, "etcdflake %s (%s)\n", version, commit)
 		return err
 	}
 	if *cfgPath == "" {
@@ -118,10 +118,10 @@ func run(ctx context.Context, args []string, stdout io.Writer) error {
 		collectors.NewGoCollector(),
 		collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}),
 		prometheus.NewGaugeFunc(prometheus.GaugeOpts{
-			Name: "i3d_worker_id", Help: "Worker ID owned by this node.",
+			Name: "etcdflake_worker_id", Help: "Worker ID owned by this node.",
 		}, func() float64 { return float64(w.ID()) }),
 		prometheus.NewGaugeFunc(prometheus.GaugeOpts{
-			Name: "i3d_reservation_remaining_seconds",
+			Name: "etcdflake_reservation_remaining_seconds",
 			Help: "How long this node can keep issuing IDs without reaching etcd.",
 		}, func() float64 { return w.ReservationRemaining().Seconds() }),
 	)
@@ -134,7 +134,7 @@ func run(ctx context.Context, args []string, stdout io.Writer) error {
 	if err != nil {
 		return err
 	}
-	i3dv1.RegisterIDServiceServer(grpcServer, idServer)
+	etcdflakev1.RegisterIDServiceServer(grpcServer, idServer)
 	healthServer := health.NewServer()
 	healthpb.RegisterHealthServer(grpcServer, healthServer)
 	reflection.Register(grpcServer)
@@ -152,7 +152,7 @@ func run(ctx context.Context, args []string, stdout io.Writer) error {
 		go func() { serveErr <- debugServer.Serve(debugLis) }()
 	}
 	healthServer.SetServingStatus("", healthpb.HealthCheckResponse_SERVING)
-	healthServer.SetServingStatus(i3dv1.IDService_ServiceDesc.ServiceName, healthpb.HealthCheckResponse_SERVING)
+	healthServer.SetServingStatus(etcdflakev1.IDService_ServiceDesc.ServiceName, healthpb.HealthCheckResponse_SERVING)
 	log.Info("serving",
 		zap.Int("worker_id", w.ID()),
 		zap.Stringer("grpc_addr", grpcLis.Addr()),

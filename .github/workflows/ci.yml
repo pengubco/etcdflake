@@ -43,4 +43,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - run: docker build -t i3d:ci .
+      - run: docker build -t etcdflake:ci .
