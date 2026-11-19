@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: i3d-config
+  namespace: i3d
+data:
+  config.json: |
+    {
+      "grpc_addr": "0.0.0.0:7669",
+      "allow_insecure_grpc": true,
+      "http_addr": "0.0.0.0:8001",
+      "max_workers": 1024,
+      "etcd": {
+        "endpoints": ["etcd.i3d.svc:2379"],
+        "prefix": "/i3d/",
+        "username": "i3d"
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: i3d
+  namespace: i3d
+spec:
+  replicas: 5
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: i3d
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: i3d
+    spec:
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: i3d
+          image: i3d:latest
+          imagePullPolicy: IfNotPresent
+          args: ["-config=/etc/i3d/config.json"]
+          env:
+            - name: I3D_ETCD_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: i3d-etcd
+                  key: password
+          ports:
+            - containerPort: 7669
+              name: grpc
+            - containerPort: 8001
+              name: http
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            periodSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /livez
+              port: http
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: config
+              mountPath: /etc/i3d
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: i3d-config
+---
+# ClusterIP: the gRPC API is reachable only from inside the cluster, and the
+# metrics/health port isn't exposed through the Service at all. For clients
+# outside the cluster, configure grpc_tls (with client_ca_file for mutual TLS)
+# before exposing it.
+apiVersion: v1
+kind: Service
+metadata:
+  name: i3d
+  namespace: i3d
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: i3d
+  ports:
+    - port: 7669
+      targetPort: grpc
+      name: grpc
