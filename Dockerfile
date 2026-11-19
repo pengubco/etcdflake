@@ -1,25 +1,19 @@
-#syntax=docker/dockerfile:latest
-FROM golang:1.23-alpine AS build
-
-# disable CGO because of the cross-compiling: compile on alpine and run on scratch.
-ENV CGO_ENABLED=0
-
-WORKDIR /usr/src/i3d
-
+# syntax=docker/dockerfile:1
+FROM golang:1.27-alpine AS build
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN --mount=type=cache,target=/go/pkg/mod go mod download
 COPY . .
-RUN --mount=type=cache,target=/go/pkg/mod \
-  CGO_ENABLED=0 go build -ldflags="-w -s \
-  -X main.Version=v1.0.0 \
-  -X main.BuildTime=$(date -u '+%Y-%m-%d_%H:%M:%S') \
-  -X main.GitCommit=$(git rev-parse HEAD)" \
-  -trimpath \
-  go build -o ./i3d ./cmd
+ARG VERSION=dev
+ARG COMMIT=unknown
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
+    CGO_ENABLED=0 go build -trimpath \
+    -ldflags "-s -w -X main.version=${VERSION} -X main.commit=${COMMIT}" \
+    -o /out/i3d ./cmd/i3d
 
-FROM scratch
-ENV PATH=/bin
-COPY --from=build /etc/passwd /etc/passwd
-COPY --from=build /etc/group /etc/group
-COPY --from=build /usr/src/i3d/i3d /bin/
-USER nobody:nobody
+# distroless/static has CA certificates and runs as a non-root user.
+FROM gcr.io/distroless/static:nonroot
+COPY --from=build /out/i3d /i3d
+USER nonroot:nonroot
 EXPOSE 7669 8001
-ENTRYPOINT ["/bin/i3d"]
+ENTRYPOINT ["/i3d"]

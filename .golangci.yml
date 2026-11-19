@@ -1,22 +1,29 @@
-linters:
-  enable:
-    - copyloopvar # Checks for loop variable copies in Go 1.22+
-    - gofmt
-    - goimports
-    - gosec
-    - ineffassign
-    - misspell
-    - nolintlint
-    - revive
-    - staticcheck
-    - tenv # Detects using os.Setenv instead of t.Setenv since Go 1.17
-    - unconvert
-    - unused
-    - govet
-    - dupword # Checks for duplicate words in the source code
-
-  nolintlint:
-    allow-unused: true
+version: "2"
 
 run:
   timeout: 5m
+
+linters:
+  enable:
+    - copyloopvar
+    - dupword
+    - errorlint
+    - gosec
+    - misspell
+    - nolintlint
+    - noctx
+    - revive
+    - unconvert
+    - usetesting
+  exclusions:
+    generated: strict
+    presets:
+      - std-error-handling
+    rules:
+      - path: _test\.go
+        linters: [gosec]
+
+formatters:
+  enable:
+    - gofmt
+    - goimports

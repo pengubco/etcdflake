@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package i3d.v1;
+
+option go_package = "github.com/pengubco/i3d/api/i3d/v1;i3dv1";
+
+// IDService issues unique 64-bit IDs. IDs from one node strictly increase.
+// IDs across nodes are roughly ordered by time.
+//
+// Errors:
+//   UNAVAILABLE       the node cannot issue IDs right now; retry, ideally on another node.
+//   INVALID_ARGUMENT  the request is malformed, e.g. count out of range.
+service IDService {
+  // NextID returns one ID.
+  rpc NextID(NextIDRequest) returns (NextIDResponse);
+
+  // NextIDs returns up to 4096 IDs in increasing order.
+  rpc NextIDs(NextIDsRequest) returns (NextIDsResponse);
+}
+
+message NextIDRequest {}
+
+message NextIDResponse {
+  int64 id = 1;
+}
+
+message NextIDsRequest {
+  // Number of IDs to return, in [1, 4096].
+  uint32 count = 1;
+}
+
+message NextIDsResponse {
+  repeated int64 ids = 1;
+}

@@ -1,1 +1,6 @@
-.git/
+.git
+.github
+.idea
+.vscode
+bin
+build
